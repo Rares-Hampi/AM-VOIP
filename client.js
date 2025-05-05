@@ -76,10 +76,7 @@ startButton.addEventListener("click", () => {
 
 // Închiderea conexiunii WebSocket la terminarea apelului
 function endCall() {
-  ws.close();
-  pc.close();
-  document.getElementById("localVideo").srcObject = null;
-  document.getElementById("remoteVideo").srcObject = null;
+  // TODO: Implementare funcționalitate închiderea apelului
 }
 const endButton = document.getElementById("end-call");
 endButton.addEventListener("click", () => {
@@ -101,16 +98,7 @@ closeCameraButton.addEventListener("click", () => {
 
 // Închidere microfon
 const closeMicButton = document.getElementById("close-mic");
-closeMicButton.addEventListener("click", () => {
-  if (localStream) {
-    localStream
-      .getAudioTracks()
-      .forEach((track) => (track.enabled = !track.enabled));
-    closeMicButton.textContent = localStream.getAudioTracks()[0].enabled
-      ? "Close Mic"
-      : "Open Mic";
-  }
-});
+// TODO: Implementare funcționalitate închiderea microfonului
 
 // Funcționalitate chat
 const chatInput = document.getElementById("chat-input");
