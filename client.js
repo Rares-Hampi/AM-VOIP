@@ -181,4 +181,6 @@ function displayMessage(message, sender) {
     sender === "local" ? `You: ${message}` : `Peer: ${message}`;
   messagesContainer.appendChild(messageElement);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+  // TODO : Cenzureaza mesajele care contin cuvinte interzise
 }
