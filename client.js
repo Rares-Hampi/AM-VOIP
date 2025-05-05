@@ -1,8 +1,8 @@
 // Conectare la serverul WebSocket
-const ws = new WebSocket("ws://localhost:8765");
+let ws = new WebSocket("ws://localhost:8765");
 
 // Obiect pentru conexiunea WebRTC
-const pc = new RTCPeerConnection();
+let pc = new RTCPeerConnection();
 let localStream;
 
 // Preluare video/audio local și atașare la video tag
@@ -62,10 +62,71 @@ pc.ontrack = ({ streams: [stream] }) => {
 
 // Inițiere apel - se creează un offer
 async function startCall() {
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-  ws.send(JSON.stringify({ offer }));
-  console.log("Apel inițiat");
+  if (pc.signalingState === "closed") {
+    pc = new RTCPeerConnection();
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        ws.send(JSON.stringify({ candidate: event.candidate }));
+      }
+    };
+    pc.ontrack = ({ streams: [stream] }) => {
+      const remoteVideo = document.getElementById("remoteVideo");
+      remoteVideo.srcObject = stream;
+      const filterSelect = document.getElementById("filter");
+      filterSelect.addEventListener("change", () => {
+        remoteVideo.style.filter = filterSelect.value;
+      });
+    };
+
+    if (localStream) {
+      localStream
+        .getTracks()
+        .forEach((track) => pc.addTrack(track, localStream));
+    }
+  }
+
+  if (
+    ws.readyState === WebSocket.CLOSED ||
+    ws.readyState === WebSocket.CLOSING
+  ) {
+    ws = new WebSocket("ws://localhost:8765");
+    ws.addEventListener("open", async () => {
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      ws.send(JSON.stringify({ offer }));
+      console.log("Apel inițiat");
+    });
+    ws.addEventListener("message", async ({ data }) => {
+      const msg = JSON.parse(data);
+      if (msg.answer && pc.signalingState === "have-local-offer") {
+        await pc.setRemoteDescription(new RTCSessionDescription(msg.answer));
+      } else if (msg.candidate) {
+        await pc.addIceCandidate(new RTCIceCandidate(msg.candidate));
+      } else if (msg.chatMessage) {
+        displayMessage(msg.chatMessage, "remote");
+      }
+    });
+
+    // Stop video and audio tracks when the connection is closed
+    ws.addEventListener("close", () => {
+      if (localStream) {
+        localStream.getTracks().forEach((track) => track.stop());
+      }
+      document.getElementById("localVideo").srcObject = null;
+      document.getElementById("remoteVideo").srcObject = null;
+    });
+
+    if (localStream) {
+      localStream
+        .getTracks()
+        .forEach((track) => pc.addTrack(track, localStream));
+    }
+  } else {
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    ws.send(JSON.stringify({ offer }));
+    console.log("Apel inițiat");
+  }
 }
 
 const startButton = document.getElementById("start-call");
