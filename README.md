@@ -60,7 +60,7 @@ Această aplicație servește drept demo sau punct de plecare pentru proiecte de
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Rares-Hampi/AM-VOIP 
     cd AM-VOIP
    ```
 2. Open the project in your IDE.
