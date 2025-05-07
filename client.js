@@ -138,6 +138,13 @@ startButton.addEventListener("click", () => {
 // Închiderea conexiunii WebSocket la terminarea apelului
 function endCall() {
   // TODO: Implementare funcționalitate închiderea apelului
+  /**
+   * Închiderea apelului presupune:
+   * 1. Închiderea conexiunii WebRTC
+   * 2. Închiderea conexiunii WebSocket
+   * 3. Oprirea stream-ului local
+   * 4. Butnul de end call este deja existent in HTML
+   */
 }
 const endButton = document.getElementById("end-call");
 endButton.addEventListener("click", () => {
@@ -160,6 +167,13 @@ closeCameraButton.addEventListener("click", () => {
 // Închidere microfon
 const closeMicButton = document.getElementById("close-mic");
 // TODO: Implementare funcționalitate închiderea microfonului
+/**
+ * Închiderea microfonului presupune:
+ * 1. Oprirea track-ului audio din stream-ul local
+ * 2. Schimbarea textului butonului în funcție de starea curentă a microfonului
+ * 3. Butonul de close mic este deja existent in HTML
+ * 4. Vezi cum este implementat butonul de close camera
+ */
 
 // Funcționalitate chat
 const chatInput = document.getElementById("chat-input");
@@ -183,4 +197,11 @@ function displayMessage(message, sender) {
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
   // TODO : Cenzureaza mesajele care contin cuvinte interzise
+  /**
+   * Cenzurarea mesajelor presupune:
+   * 1. Definirea unei liste de cuvinte interzise
+   * 2. Verificarea mesajului pentru fiecare cuvânt interzis
+   * 3. Înlocuirea cuvintelor interzise cu un simbol (ex: "*")
+   * 4. Afișarea mesajului cenzurat în chat
+   */
 }
