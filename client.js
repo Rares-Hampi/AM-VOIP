@@ -194,3 +194,15 @@ function displayMessage(message, sender) {
   messagesContainer.appendChild(messageElement);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
+
+const bannedWords = ["prost", "urât", "idiot"]; // cuvintele interzise
+
+function censorMessage(message) {
+  let censored = message;
+  bannedWords.forEach((word) => {
+    const regex = new RegExp("\\b${word}\\b", "gi");
+    const replacement = "*".repeat(word.length);
+    censored = censored.replace(regex, replacement);
+  });
+  return censored;
+}
